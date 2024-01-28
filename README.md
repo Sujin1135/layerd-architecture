@@ -120,3 +120,9 @@ $ ./gradlew :domain:test
 # infrastructure 모듈 테스트 수행
 $ ./gradlew :infrastructure:test
 ```
+
+## References
+
+----
+- [Organizing Layers Using Hexagonal Architecture, DDD, and Spring](https://www.baeldung.com/hexagonal-architecture-ddd-spring)
+- [Gradle과 함께하는 Backend Layered Architecture](https://medium.com/riiid-teamblog-kr/gradle%EA%B3%BC-%ED%95%A8%EA%BB%98%ED%95%98%EB%8A%94-backend-layered-architecture-97117b344ba8)
