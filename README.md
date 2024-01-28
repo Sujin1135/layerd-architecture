@@ -1,46 +1,10 @@
 # Layered Architecture using DDD / Hexagonal and Spring, grpc-kotlin
 
-Key / Value 데이터를 관리하는 서버입니다. 아래 proto 파일 명세대로 구현 하였으며, 상세조회 / 저장 기능을 담당합니다.
+해당 프로젝트의 내부 도메인 레이어(inside)는 외부 레이어(outside)와 관련없이 내부 비즈니스 모델에 집중하며 외부의 연동을 허용하기 위하여 포트(interface)를 사용합니다.<br/><br/>
+이는 일반적으로 알려진 DDD Layered Architecture, Hexagonal 의 개념을 차용 하였으며, 클라이언트의 요청과 외부 API 연동과 DB 엑세스를 위해 Application(outside) / Domain(inside) / Infrastructure(outside) 로 나누어진 레이어 구조를 가집니다.
 
-[data.proto](api%2Fsrc%2Fmain%2Fproto%2Forg%2Fmango%2Fdata%2Fdata.proto)
-```protobuf
-syntax = "proto3";
 
-package org.mango.data;
-
-option java_package = "org.mango.data";
-option java_multiple_files = true;
-
-import "google/protobuf/empty.proto";
-
-service KeyValueService {
-  rpc Get(GetRequest) returns (GetResponse);
-  rpc Save(SaveRequest) returns (SaveResponse);
-}
-
-message GetRequest {
-  string key = 1;
-}
-
-message GetResponse {
-  string key = 1;
-  oneof result {
-    string value = 2;
-
-    google.protobuf.Empty no_value = 3;
-  }
-}
-
-message SaveRequest {
-  string key = 1;
-  string value = 2;
-}
-
-message SaveResponse {
-  string key = 1;
-  string value = 2;
-}
-```
+![ddd.png](public%2Fimages%2Fddd.png)
 
 ## Requirements
 
@@ -81,7 +45,6 @@ $ ./gradlew :boot:bootRun
 
 멀티모듈 구조로 레이어 단위로 나뉘어져 있으며 아래 이미지와 같은 구조와 각 프로젝트별 연관 관계를 가지고 있습니다.
 
-![ddd.png](public%2Fimages%2Fddd.png)
 - boot
   - 프로젝트의 진입점(실행), application yaml 설정 관리
   - 모든 모듈을 참조
@@ -119,6 +82,52 @@ $ ./gradlew :domain:test
 
 # infrastructure 모듈 테스트 수행
 $ ./gradlew :infrastructure:test
+```
+
+## Feature
+
+----
+
+Key / Value 데이터를 관리하는 서버입니다. 아래 proto 파일 명세대로 구현 하였으며, 상세조회 / 저장 기능을 담당합니다.
+
+[data.proto](api%2Fsrc%2Fmain%2Fproto%2Forg%2Fmango%2Fdata%2Fdata.proto)
+```protobuf
+syntax = "proto3";
+
+package org.mango.data;
+
+option java_package = "org.mango.data";
+option java_multiple_files = true;
+
+import "google/protobuf/empty.proto";
+
+service KeyValueService {
+  rpc Get(GetRequest) returns (GetResponse);
+  rpc Save(SaveRequest) returns (SaveResponse);
+}
+
+message GetRequest {
+  string key = 1;
+}
+
+message GetResponse {
+  string key = 1;
+  oneof result {
+    string value = 2;
+
+    google.protobuf.Empty no_value = 3;
+  }
+}
+
+message SaveRequest {
+  string key = 1;
+  string value = 2;
+}
+
+message SaveResponse {
+  string key = 1;
+  string value = 2;
+}
 ```
 
 ## References
