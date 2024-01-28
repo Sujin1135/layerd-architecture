@@ -1,4 +1,4 @@
-# Layered Architecture using Hexagonal, DDD, Spring, kotlin and gRPC
+# git remote add origin git@github.com:Sujin1135/layerd-architecture.git
 
 Key / Value 데이터를 관리하는 서버입니다. 아래 proto 파일 명세대로 구현 하였으며, 상세조회 / 저장 기능을 담당합니다.
 
@@ -120,13 +120,3 @@ $ ./gradlew :domain:test
 # infrastructure 모듈 테스트 수행
 $ ./gradlew :infrastructure:test
 ```
-
-## Conclusions
-
-----
-
-kotlin-grpc, spring boot webflux, r2dbc 를 사용하여 개발 하였습니다<br/>
-
-병렬로 여러 요청을 처리하기 위해 호출 함수들은 suspend function 으로 정의되어 있으며, I/O 요청 작업은 withContext 내에서 수행되고 DB 연동은 R2DBC를 활용하여 구현하였고 이외에 나머지 필수 요구사항, 선택사항을 모두 적용했습니다.<br/>
-
-혹 궁금하신 점들이나 실행이 안되는 이슈가 발생한다면 말씀 주시면 답변 드리도록 하겠습니다! 감사합니다 :)
