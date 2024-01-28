@@ -1,4 +1,4 @@
-# git remote add origin git@github.com:Sujin1135/layerd-architecture.git
+# Layered Architecture using DDD / Hexagonal and Spring, grpc-kotlin
 
 Key / Value 데이터를 관리하는 서버입니다. 아래 proto 파일 명세대로 구현 하였으며, 상세조회 / 저장 기능을 담당합니다.
 
