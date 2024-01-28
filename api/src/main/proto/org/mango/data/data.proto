@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package org.mango.data;
+
+option java_package = "org.mango.data";
+option java_multiple_files = true;
+
+import "google/protobuf/empty.proto";
+
+service KeyValueService {
+  rpc Get(GetRequest) returns (GetResponse);
+  rpc Save(SaveRequest) returns (SaveResponse);
+}
+
+message GetRequest {
+  string key = 1;
+}
+
+message GetResponse {
+  string key = 1;
+  oneof result {
+    string value = 2;
+
+    google.protobuf.Empty no_value = 3;
+  }
+}
+
+message SaveRequest {
+  string key = 1;
+  string value = 2;
+}
+
+message SaveResponse {
+  string key = 1;
+  string value = 2;
+}

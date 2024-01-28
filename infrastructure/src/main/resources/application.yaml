@@ -1,0 +1,8 @@
+spring:
+    r2dbc:
+        url: r2dbc:mysql://127.0.0.1:13306/mango?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Seoul
+        username: root
+        password: root
+        pool:
+            max-size: 100
+            validation-query: SELECT 1

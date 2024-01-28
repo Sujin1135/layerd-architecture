@@ -1,0 +1,14 @@
+version: "3"
+services:
+  mysql-test:
+    image: mysql:latest
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - ./my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./setup.sql:/docker-entrypoint-initdb.d/setup.sql

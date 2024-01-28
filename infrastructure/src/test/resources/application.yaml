@@ -1,0 +1,9 @@
+spring:
+  data:
+    r2dbc:
+      repositories:
+        enabled: true
+  r2dbc:
+    url: r2dbc:mysql://localhost:3306/mango
+    username: root
+    password: root
