@@ -12,6 +12,7 @@ tasks.getByName<Jar>("jar") {
 plugins {
     id("org.springframework.boot") version "3.2.2"
     id("io.spring.dependency-management") version "1.1.4"
+    id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
     kotlin("jvm") version "1.9.22"
     kotlin("plugin.spring") version "1.9.22"
 }
@@ -38,6 +39,7 @@ subprojects {
 
     apply(plugin = "kotlin")
     apply(plugin = "kotlin-spring")
+    apply(plugin = "org.jlleitschuh.gradle.ktlint")
 
     dependencies {
         implementation("org.springframework.boot:spring-boot-starter-webflux")
@@ -59,6 +61,10 @@ subprojects {
 
     tasks.getByName<Jar>("jar") {
         enabled = true
+    }
+
+    configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
+        debug.set(true)
     }
 }
 
