@@ -22,8 +22,8 @@ import org.springframework.boot.test.context.SpringBootTest
 @AutoConfigureWebTestClient
 @ExtendWith(MockKExtension::class)
 class KeyValueInputServiceTest(
-        @Autowired @Qualifier("keyValueService") private val service: KeyValueService,
-        @Autowired private val repository: KeyValueRepository,
+    @Autowired @Qualifier("keyValueService") private val service: KeyValueService,
+    @Autowired private val repository: KeyValueRepository,
 ) {
     private val faker: Faker = Faker()
     private val key = faker.name.nameWithMiddle()
@@ -32,52 +32,57 @@ class KeyValueInputServiceTest(
     private val keyValueInput = KeyValueInput(key, value)
 
     @BeforeEach
-    fun setup(): Unit = runBlocking {
-        MockKAnnotations.init(this@KeyValueInputServiceTest)
+    fun setup(): Unit =
+        runBlocking {
+            MockKAnnotations.init(this@KeyValueInputServiceTest)
 
-        coEvery { repository.findOne(key) } returns keyValueResponse
-        coEvery { repository.upsert(keyValueInput) } answers { keyValueResponse }
-    }
-
-    @Test
-    fun `입력받은 key에 해당하는 key, value 데이터가 반환된다`() = runBlocking {
-        val sut = service.get(key)
-
-        assertEquals(sut.key, key)
-    }
+            coEvery { repository.findOne(key) } returns keyValueResponse
+            coEvery { repository.upsert(keyValueInput) } answers { keyValueResponse }
+        }
 
     @Test
-    fun `입력받은 key에 해당하는 데이터가 없을 경우 입력한 key값과 null value가 반환된다`() = runBlocking {
-        val invalidKey = "invalid_key"
+    fun `입력받은 key에 해당하는 key, value 데이터가 반환된다`() =
+        runBlocking {
+            val sut = service.get(key)
 
-        coEvery { repository.findOne(invalidKey) } returns null
-
-        val sut = service.get(invalidKey)
-
-        assertEquals(sut.key, invalidKey)
-        assertEquals(sut.value, null)
-    }
+            assertEquals(sut.key, key)
+        }
 
     @Test
-    fun `입력받은 key, value 데이터 저장 이후, 요청했던 key, value 데이터가 반환 되어야 한다`() = runBlocking {
-        val sut = service.save(keyValueInput)
+    fun `입력받은 key에 해당하는 데이터가 없을 경우 입력한 key값과 null value가 반환된다`() =
+        runBlocking {
+            val invalidKey = "invalid_key"
 
-        assertEquals(sut.key, keyValueInput.key)
-        assertEquals(sut.value, keyValueInput.value)
-    }
+            coEvery { repository.findOne(invalidKey) } returns null
+
+            val sut = service.get(invalidKey)
+
+            assertEquals(sut.key, invalidKey)
+            assertEquals(sut.value, null)
+        }
 
     @Test
-    fun `이미 생성되어있는 key 데이터에 대해 다른 value값으로 중복 save 요청 시, 마지막 요청한 value 값이 반환된다`() = runBlocking {
-        service.save(keyValueInput)
+    fun `입력받은 key, value 데이터 저장 이후, 요청했던 key, value 데이터가 반환 되어야 한다`() =
+        runBlocking {
+            val sut = service.save(keyValueInput)
 
-        val value2 = "test_value2"
-        val input2 = KeyValueInput(key, value2)
+            assertEquals(sut.key, keyValueInput.key)
+            assertEquals(sut.value, keyValueInput.value)
+        }
 
-        coEvery { repository.upsert(input2) } answers { KeyValueResponse(input2.key, input2.value) }
+    @Test
+    fun `이미 생성되어있는 key 데이터에 대해 다른 value값으로 중복 save 요청 시, 마지막 요청한 value 값이 반환된다`() =
+        runBlocking {
+            service.save(keyValueInput)
 
-        val sut = service.save(input2)
+            val value2 = "test_value2"
+            val input2 = KeyValueInput(key, value2)
 
-        assertEquals(input2.key, sut.key)
-        assertEquals(input2.value, sut.value)
-    }
+            coEvery { repository.upsert(input2) } answers { KeyValueResponse(input2.key, input2.value) }
+
+            val sut = service.save(input2)
+
+            assertEquals(input2.key, sut.key)
+            assertEquals(input2.value, sut.value)
+        }
 }
