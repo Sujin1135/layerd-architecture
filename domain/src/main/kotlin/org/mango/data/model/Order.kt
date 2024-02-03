@@ -8,14 +8,13 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 data class Order(
-    val product: Product,
     val id: UUID = UUID.randomUUID(),
     val createdAt: LocalDateTime = LocalDateTime.now(),
     val updatedAt: LocalDateTime = LocalDateTime.now(),
 ) {
-    var price: BigDecimal = product.price
-    var status: OrderStatus? = OrderStatus.CREATED
-    var orderItems: MutableList<OrderItem> = mutableListOf(OrderItem(product.price, product.id))
+    var price: BigDecimal = BigDecimal.ZERO
+    var status: OrderStatus = OrderStatus.CREATED
+    var orderItems: MutableList<OrderItem> = mutableListOf()
 
     fun complete() {
         validateState()
@@ -24,7 +23,7 @@ data class Order(
 
     fun addOrder(product: Product) {
         validateState()
-        orderItems.addLast(OrderItem(product.price, product.id))
+        orderItems.addLast(OrderItem(product.price))
         price += product.price
     }
 

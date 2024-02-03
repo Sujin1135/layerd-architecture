@@ -34,12 +34,14 @@ class OrderServiceTest(
     @Autowired private val repository: OrderRepository,
 ) {
     private val faker: Faker = Faker()
-    private val responseOrder = Order(Product(faker.name.name(), BigDecimal(25000)), UUID.randomUUID())
+    private val responseOrder = Order(UUID.randomUUID())
 
     @BeforeEach
     fun setup(): Unit =
         runBlocking {
             MockKAnnotations.init(this@OrderServiceTest)
+
+            responseOrder.addOrder(Product(faker.name.name(), BigDecimal(25000)))
 
             coEvery { repository.findById(responseOrder.id) } returns responseOrder
             coEvery { repository.save(any()) } just Runs
@@ -51,8 +53,10 @@ class OrderServiceTest(
             val price = BigDecimal(30000)
             val product = Product(faker.name.name(), price)
             val createdId = service.createOrder(product)
+            val order = Order()
+            order.addOrder(product)
 
-            coEvery { repository.findById(createdId) } returns Order(product)
+            coEvery { repository.findById(createdId) } returns order
 
             val sut = repository.findById(createdId)
 

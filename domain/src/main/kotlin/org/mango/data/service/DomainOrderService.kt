@@ -4,11 +4,14 @@ import org.mango.data.exception.NotFoundException
 import org.mango.data.model.Order
 import org.mango.data.model.Product
 import org.mango.data.repository.OrderRepository
+import org.springframework.stereotype.Service
 import java.util.UUID
 
+@Service
 class DomainOrderService(private val repository: OrderRepository) : OrderService {
     override suspend fun createOrder(product: Product): UUID {
-        val order = Order(product)
+        val order = Order()
+        order.addOrder(product)
         repository.save(order)
 
         return order.id

@@ -7,3 +7,9 @@ spring:
     url: r2dbc:mysql://localhost:3306/mango
     username: root
     password: root
+
+logging:
+  level:
+    org:
+      springframework:
+        r2dbc: DEBUG
