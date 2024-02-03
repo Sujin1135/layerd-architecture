@@ -5,5 +5,6 @@ import org.mango.data.model.KeyValueResponse
 
 interface KeyValueRepository {
     suspend fun findOne(key: String): KeyValueResponse?
+
     suspend fun upsert(keyValue: KeyValueInput): KeyValueResponse
 }

@@ -10,6 +10,11 @@ interface R2DBKeyValueRepository : CoroutineCrudRepository<KeyValueEntity, UInt>
     @Query("SELECT * FROM key_values WHERE key_values.key = :key")
     suspend fun findOneByKey(key: String): KeyValueEntity?
 
-    @Query("INSERT INTO key_values (key_values.key, key_values.value) VALUES (:key, :value) ON DUPLICATE KEY UPDATE key_values.value = :value")
-    suspend fun upsert(key: String, value: String)
+    @Query(
+        "INSERT INTO key_values (key_values.key, key_values.value) VALUES (:key, :value) ON DUPLICATE KEY UPDATE key_values.value = :value",
+    )
+    suspend fun upsert(
+        key: String,
+        value: String,
+    )
 }

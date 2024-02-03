@@ -63,8 +63,13 @@ subprojects {
         enabled = true
     }
 
-    configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
-        debug.set(true)
+    ktlint {
+        filter {
+            exclude { entry ->
+                entry.file.path.contains("generated")
+            }
+        }
+        debug = true
     }
 }
 

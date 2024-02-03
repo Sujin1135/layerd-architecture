@@ -5,5 +5,6 @@ import org.mango.data.model.KeyValueResponse
 
 interface KeyValueService {
     suspend fun get(key: String): KeyValueResponse
+
     suspend fun save(data: KeyValueInput): KeyValueResponse
 }
