@@ -31,14 +31,3 @@ data class OrderItemEntity(
     @Column("updated_at")
     val updatedAt: LocalDateTime? = null,
 )
-
-@Table(name = "products")
-data class ProductEntity(
-    val uuid: String,
-    @Id val id: Long? = null,
-    val price: BigDecimal,
-    @Column("created_at")
-    val createdAt: LocalDateTime? = null,
-    @Column("updated_at")
-    val updatedAt: LocalDateTime? = null,
-)

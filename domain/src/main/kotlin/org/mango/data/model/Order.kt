@@ -21,13 +21,13 @@ data class Order(
         status = OrderStatus.COMPLETED
     }
 
-    fun addOrder(product: Product) {
+    fun addOrder(orderItem: OrderItem) {
         validateState()
-        orderItems.addLast(OrderItem(product.price))
-        price += product.price
+        orderItems.addLast(OrderItem(orderItem.price))
+        price += orderItem.price
     }
 
-    fun removeOrder(id: UUID) {
+    fun removeOrderItem(id: UUID) {
         validateState()
         val orderItem = getOrderItem(id)
         orderItems.remove(orderItem)

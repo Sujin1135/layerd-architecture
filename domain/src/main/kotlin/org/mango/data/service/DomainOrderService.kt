@@ -2,27 +2,27 @@ package org.mango.data.service
 
 import org.mango.data.exception.NotFoundException
 import org.mango.data.model.Order
-import org.mango.data.model.Product
+import org.mango.data.model.OrderItem
 import org.mango.data.repository.OrderRepository
 import org.springframework.stereotype.Service
 import java.util.UUID
 
 @Service
 class DomainOrderService(private val repository: OrderRepository) : OrderService {
-    override suspend fun createOrder(product: Product): UUID {
+    override suspend fun createOrder(orderItem: OrderItem): UUID {
         val order = Order()
-        order.addOrder(product)
+        order.addOrder(orderItem)
         repository.save(order)
 
         return order.id
     }
 
-    override suspend fun addProduct(
+    override suspend fun addOrderItem(
         id: UUID,
-        product: Product,
+        orderItem: OrderItem,
     ) {
         val order = getOrder(id)
-        order.addOrder(product)
+        order.addOrder(orderItem)
 
         repository.save(order)
     }
@@ -34,12 +34,12 @@ class DomainOrderService(private val repository: OrderRepository) : OrderService
         repository.save(order)
     }
 
-    override suspend fun deleteProduct(
+    override suspend fun deleteOrderItem(
         id: UUID,
-        productId: UUID,
+        orderItemId: UUID,
     ) {
         val order = getOrder(id)
-        order.removeOrder(productId)
+        order.removeOrderItem(orderItemId)
 
         repository.save(order)
     }

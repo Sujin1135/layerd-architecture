@@ -1,13 +1,12 @@
 package org.mango.data.repository
 
-import io.github.serpro69.kfaker.Faker
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mango.data.exception.NotFoundException
 import org.mango.data.model.Order
-import org.mango.data.model.Product
+import org.mango.data.model.OrderItem
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.DynamicPropertyRegistry
@@ -24,9 +23,7 @@ import java.util.UUID
 @SpringBootTest
 class MySQLOrderRepositoryTest(
     @Autowired private val repository: MySQLOrderRepository,
-    @Autowired private val r2dbRepository: R2DBOrderRepository,
 ) {
-    private val faker: Faker = Faker()
     private var initOrder = Order()
 
     companion object {
@@ -55,7 +52,7 @@ class MySQLOrderRepositoryTest(
     @BeforeEach
     fun setup(): Unit =
         runBlocking {
-            initOrder.addOrder(Product(faker.name.name(), BigDecimal.TWO))
+            initOrder.addOrder(OrderItem(BigDecimal.TWO))
             repository.save(initOrder)
         }
 
@@ -74,7 +71,7 @@ class MySQLOrderRepositoryTest(
     fun `초기 주문 데이터를 저장하면 uuid, 가격 정보가 저장되고 해당하는 아이템 객체가 추가 되어야 하고 uuid로 조회 시 저장한 데이터가 반환 되어야 한다`() =
         runBlocking {
             val order = Order()
-            order.addOrder(Product(faker.name.name(), BigDecimal(5000)))
+            order.addOrder(OrderItem(BigDecimal(5000)))
 
             repository.save(order)
 
@@ -88,7 +85,7 @@ class MySQLOrderRepositoryTest(
     @Test
     fun `기존 저장된 데이터를 다시 저장하면 원하는대로 데이터가 수정 되어야 한다`() =
         runBlocking {
-            initOrder.addOrder(Product(name = faker.name.name(), price = BigDecimal.TEN))
+            initOrder.addOrder(OrderItem(BigDecimal.TEN))
 
             repository.save(initOrder)
 

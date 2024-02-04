@@ -1,6 +1,5 @@
 package org.mango.data.service
 
-import io.github.serpro69.kfaker.Faker
 import io.mockk.MockKAnnotations
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -15,7 +14,7 @@ import org.mango.data.enum.OrderStatus
 import org.mango.data.exception.BadRequestException
 import org.mango.data.exception.NotFoundException
 import org.mango.data.model.Order
-import org.mango.data.model.Product
+import org.mango.data.model.OrderItem
 import org.mango.data.repository.OrderRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
@@ -33,7 +32,6 @@ class OrderServiceTest(
     @Autowired @Qualifier("OrderService") private val service: OrderService,
     @Autowired private val repository: OrderRepository,
 ) {
-    private val faker: Faker = Faker()
     private val responseOrder = Order(UUID.randomUUID())
 
     @BeforeEach
@@ -41,7 +39,7 @@ class OrderServiceTest(
         runBlocking {
             MockKAnnotations.init(this@OrderServiceTest)
 
-            responseOrder.addOrder(Product(faker.name.name(), BigDecimal(25000)))
+            responseOrder.addOrder(OrderItem(BigDecimal(25000)))
 
             coEvery { repository.findById(responseOrder.id) } returns responseOrder
             coEvery { repository.save(any()) } just Runs
@@ -51,10 +49,10 @@ class OrderServiceTest(
     fun `주문받은 상품에 대한 주문 데이터 생성 요청 후, 상품의 가격에 해당하는 데이터가 생성 되어야 한다`() =
         runBlocking {
             val price = BigDecimal(30000)
-            val product = Product(faker.name.name(), price)
-            val createdId = service.createOrder(product)
+            val orderItem = OrderItem(price)
+            val createdId = service.createOrder(orderItem)
             val order = Order()
-            order.addOrder(product)
+            order.addOrder(orderItem)
 
             coEvery { repository.findById(createdId) } returns order
 
@@ -66,13 +64,12 @@ class OrderServiceTest(
     @Test
     fun `진행중인 주문에 상품을 추가하면, 추가한 상품 가격이 주문 가격에 반영 되어야 한다`() =
         runBlocking {
-            val price = BigDecimal(23000)
-            val product = Product(faker.name.name(), price)
+            val orderItem = OrderItem(BigDecimal(23000))
             val beforeResponseOrderPrice = responseOrder.price
 
-            service.addProduct(responseOrder.id, product)
+            service.addOrderItem(responseOrder.id, orderItem)
 
-            assertEquals(responseOrder.price, beforeResponseOrderPrice + product.price)
+            assertEquals(responseOrder.price, beforeResponseOrderPrice + orderItem.price)
         }
 
     @Test
@@ -82,7 +79,7 @@ class OrderServiceTest(
 
             val exception =
                 assertFailsWith<BadRequestException> {
-                    service.addProduct(responseOrder.id, Product(faker.name.name(), BigDecimal(25000)))
+                    service.addOrderItem(responseOrder.id, OrderItem(BigDecimal(25000)))
                 }
 
             assertEquals(exception.message, "The order is in completed state")
@@ -91,12 +88,11 @@ class OrderServiceTest(
     @Test
     fun `진행중인 주문에 상품을 추가하면, 추가한 상품 가격이 주문 아이템에 반영 되어야 한다`() =
         runBlocking {
-            val price = BigDecimal(23000)
-            val product = Product(faker.name.name(), price)
+            val orderItem = OrderItem(BigDecimal(23000))
 
-            service.addProduct(responseOrder.id, product)
+            service.addOrderItem(responseOrder.id, orderItem)
 
-            assertEquals(responseOrder.orderItems.last().price, product.price)
+            assertEquals(responseOrder.orderItems.last().price, orderItem.price)
         }
 
     @Test
@@ -125,7 +121,7 @@ class OrderServiceTest(
     @Test
     fun `진행중인 주문건에 등록된 주문 아이템 제거 요청 시, 제거한 상품의 가격만큼 주문 가격이 차감 되어야 한다`() =
         runBlocking {
-            service.deleteProduct(responseOrder.id, responseOrder.orderItems.last().id)
+            service.deleteOrderItem(responseOrder.id, responseOrder.orderItems.last().id)
 
             assertEquals(responseOrder.price, BigDecimal(0))
         }
@@ -137,7 +133,7 @@ class OrderServiceTest(
 
             val exception =
                 assertFailsWith<BadRequestException> {
-                    service.deleteProduct(responseOrder.id, responseOrder.orderItems.last().id)
+                    service.deleteOrderItem(responseOrder.id, responseOrder.orderItems.last().id)
                 }
 
             assertEquals(exception.message, "The order is in completed state")
@@ -150,7 +146,7 @@ class OrderServiceTest(
 
             val exception =
                 assertFailsWith<NotFoundException> {
-                    service.deleteProduct(responseOrder.id, invalidOrderItemId)
+                    service.deleteOrderItem(responseOrder.id, invalidOrderItemId)
                 }
 
             assertEquals(exception.message, "Can not found order item by id($invalidOrderItemId)")

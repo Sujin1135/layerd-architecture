@@ -8,13 +8,13 @@ option java_multiple_files = true;
 import "google/protobuf/empty.proto";
 
 service OrderService {
-  rpc CreateOrder(ProductRequest) returns (CreateOrderResponse);
-  rpc AddProduct(AddProductRequest) returns (google.protobuf.Empty);
+  rpc CreateOrder(OrderItemRequest) returns (CreateOrderResponse);
+  rpc AddOrderItem(AddOrderItemRequest) returns (google.protobuf.Empty);
   rpc CompleteOrder(CompleteOrderRequest) returns (google.protobuf.Empty);
-  rpc DeleteProduct(DeleteProductRequest) returns (google.protobuf.Empty);
+  rpc DeleteOrderItem(DeleteOrderItemRequest) returns (google.protobuf.Empty);
 }
 
-message ProductRequest {
+message OrderItemRequest {
   string name = 1;
   double price = 2;
 }
@@ -23,16 +23,16 @@ message CreateOrderResponse {
   string id = 1;
 }
 
-message AddProductRequest {
+message AddOrderItemRequest {
   string id = 1;
-  ProductRequest product = 2;
+  OrderItemRequest orderItem = 2;
 }
 
 message CompleteOrderRequest {
   string id = 1;
 }
 
-message DeleteProductRequest {
+message DeleteOrderItemRequest {
   string id = 1;
-  string productId = 2;
+  string orderItemId = 2;
 }

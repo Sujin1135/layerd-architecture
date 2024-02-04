@@ -23,12 +23,3 @@ create table mango.order_items(
     `created_at` timestamp not null default CURRENT_TIMESTAMP,
     `updated_at` timestamp not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP
 );
-
-create table mango.products(
-    `id` bigint unsigned primary key auto_increment,
-    `uuid` varchar(36) unique not null,
-    `price` decimal unsigned not null,
-    `name` varchar(100) not null,
-    `created_at` timestamp not null default CURRENT_TIMESTAMP,
-    `updated_at` timestamp not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP
-);
