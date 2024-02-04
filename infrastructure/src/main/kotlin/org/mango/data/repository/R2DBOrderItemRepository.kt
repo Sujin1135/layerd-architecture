@@ -20,4 +20,7 @@ interface R2DBOrderItemRepository : CoroutineCrudRepository<OrderItemEntity, UIn
         orderId: Long,
         price: BigDecimal,
     )
+
+    @Query("DELETE FROM order_items WHERE uuid not in (:uuids)")
+    suspend fun deleteByNotInUUIDs(uuids: List<String>)
 }

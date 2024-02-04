@@ -33,6 +33,8 @@ class MySQLOrderRepository(
 
         val entity = repository.findByUUID(order.id.toString()) ?: throw NotFoundException("It is not existed order by uuid($order.id)")
 
+        itemRepository.deleteByNotInUUIDs(order.orderItems.map { it.id.toString() })
+
         order.orderItems.forEach {
             itemRepository.upsert(
                 it.id.toString(),
