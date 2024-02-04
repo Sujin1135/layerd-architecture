@@ -15,8 +15,7 @@ service OrderService {
 }
 
 message OrderItemRequest {
-  string name = 1;
-  double price = 2;
+  double price = 1;
 }
 
 message CreateOrderResponse {

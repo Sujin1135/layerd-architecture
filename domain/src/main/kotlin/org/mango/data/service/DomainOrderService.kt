@@ -5,10 +5,18 @@ import org.mango.data.model.Order
 import org.mango.data.model.OrderItem
 import org.mango.data.repository.OrderRepository
 import org.springframework.stereotype.Service
+import org.springframework.transaction.ReactiveTransactionManager
+import org.springframework.transaction.reactive.TransactionalOperator
+import org.springframework.transaction.reactive.executeAndAwait
 import java.util.UUID
 
 @Service
-class DomainOrderService(private val repository: OrderRepository) : OrderService {
+class DomainOrderService(
+    private val repository: OrderRepository,
+    transactionManager: ReactiveTransactionManager,
+) : OrderService {
+    private val transactionalOperator = TransactionalOperator.create(transactionManager)
+
     override suspend fun createOrder(orderItem: OrderItem): UUID {
         val order = Order()
         order.addOrder(orderItem)
@@ -21,10 +29,12 @@ class DomainOrderService(private val repository: OrderRepository) : OrderService
         id: UUID,
         orderItem: OrderItem,
     ) {
-        val order = getOrder(id)
-        order.addOrder(orderItem)
+        transactionalOperator.executeAndAwait {
+            val order = getOrder(id)
+            order.addOrder(orderItem)
 
-        repository.save(order)
+            repository.save(order)
+        }
     }
 
     override suspend fun completeOrder(id: UUID) {
@@ -38,10 +48,12 @@ class DomainOrderService(private val repository: OrderRepository) : OrderService
         id: UUID,
         orderItemId: UUID,
     ) {
-        val order = getOrder(id)
-        order.removeOrderItem(orderItemId)
+        transactionalOperator.executeAndAwait {
+            val order = getOrder(id)
+            order.removeOrderItem(orderItemId)
 
-        repository.save(order)
+            repository.save(order)
+        }
     }
 
     private suspend fun getOrder(id: UUID): Order {

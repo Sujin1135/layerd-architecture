@@ -9,6 +9,7 @@ import org.mango.data.service.OrderService
 import org.mango.data.service.UserKeyValueService
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
+import org.springframework.transaction.ReactiveTransactionManager
 
 @TestConfiguration
 class DomainTestConfig {
@@ -28,7 +29,15 @@ class DomainTestConfig {
     }
 
     @Bean
-    fun OrderService(repository: OrderRepository): OrderService {
-        return DomainOrderService(repository)
+    fun ReactiveTransactionManager(): ReactiveTransactionManager {
+        return mockk(relaxed = true)
+    }
+
+    @Bean
+    fun OrderService(
+        repository: OrderRepository,
+        transactionManager: ReactiveTransactionManager,
+    ): OrderService {
+        return DomainOrderService(repository, transactionManager)
     }
 }

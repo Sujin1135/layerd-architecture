@@ -4,7 +4,7 @@ import org.mango.data.model.OrderItem
 import java.util.UUID
 
 interface OrderService {
-    suspend fun createOrder(product: OrderItem): UUID
+    suspend fun createOrder(orderItem: OrderItem): UUID
 
     suspend fun addOrderItem(
         id: UUID,

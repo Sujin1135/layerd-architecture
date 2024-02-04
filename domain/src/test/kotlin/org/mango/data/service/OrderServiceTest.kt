@@ -5,6 +5,8 @@ import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.junit5.MockKExtension
 import io.mockk.just
+import io.mockk.mockk
+import kotlinx.coroutines.reactor.mono
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -20,16 +22,19 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.transaction.ReactiveTransactionManager
 import java.math.BigDecimal
 import java.util.UUID
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
+@Suppress("UNCHECKED_CAST")
 @SpringBootTest(classes = [DomainTestConfig::class])
 @AutoConfigureWebTestClient
 @ExtendWith(MockKExtension::class)
 class OrderServiceTest(
     @Autowired @Qualifier("OrderService") private val service: OrderService,
+    @Autowired private val reactiveTransactionManager: ReactiveTransactionManager,
     @Autowired private val repository: OrderRepository,
 ) {
     private val responseOrder = Order(UUID.randomUUID())
@@ -40,6 +45,10 @@ class OrderServiceTest(
             MockKAnnotations.init(this@OrderServiceTest)
 
             responseOrder.addOrder(OrderItem(BigDecimal(25000)))
+
+            coEvery { reactiveTransactionManager.getReactiveTransaction(any()) } answers { mono { mockk() } }
+            coEvery { reactiveTransactionManager.commit(any()) } answers { mono { mockk() } }
+            coEvery { reactiveTransactionManager.rollback(any()) } answers { mono { mockk() } }
 
             coEvery { repository.findById(responseOrder.id) } returns responseOrder
             coEvery { repository.save(any()) } just Runs
