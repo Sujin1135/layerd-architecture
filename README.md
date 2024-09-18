@@ -3,7 +3,6 @@
 해당 프로젝트의 내부 도메인 레이어(inside)는 외부 레이어(outside)와 관련없이 내부 비즈니스 모델에 집중하며 외부의 연동을 허용하기 위하여 포트(interface)를 사용합니다.<br/><br/>
 이는 일반적으로 알려진 DDD Layered Architecture, Hexagonal 의 개념을 차용 하였으며, 클라이언트의 요청과 외부 API 연동과 DB 엑세스를 위해 Application(outside) / Domain(inside) / Infrastructure(outside) 로 나누어진 레이어 구조를 가집니다.
 
-
 ![ddd.png](public%2Fimages%2Fddd.png)
 
 ## Requirements
